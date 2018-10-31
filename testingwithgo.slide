@@ -1,0 +1,85 @@
+Cover your Go code with tests
+
+Federico Paolinelli
+List
+@fedepaol
+fedepaol@gmail.com
+federico@list-group.com
+
+* About me
+
+- Lead developer at List
+- Moving from C on daily basis to golang
+- Open source lover
+
+* Agenda
+
+- Intro to testing
+- Testing with go
+- Advanced testing patterns with go
+
+* The need for tests
+
+We do change our code.
+Reasons we change:
+- New features
+- Fixing a bug
+- Refactor (better readability / easier to maintain)
+- Optimization
+
+* Every time we change a program that is behaving in a correct way, we put it's correctness in discussion.
+We need to preserve the behaviour
+Correcntess
+
+* What do we mean by testing
+
+Changes in a system can be made in two primary ways. I like to call them Edit and Pray and Cover and Modify. 
+Unfortunately, Edit and Pray is pretty much the industry standard
+
+
+* The cost of a bug
+Grafico di quanto costa un bug 
+
+* Manual tests?
+Colabrodo
+
+* Why do we need tests
+* What to test
+* Intro to TDD
+- Write testable code
+
+Avoid global state. Make global state as config that can be changed / clear it.
+TODO Rubare un po' di concetti da working effectively from legacy code
+
+Isolate dependencies
+TODO : c'era un articolo su come organizzare i progetti in moduli
+TODO parlare del fatto ceh ogni modulo deve essere isolato e avere poche dipendenze
+
+* CI
+
+* Testing in Go
+* Where to put test files
+How does a test look like. Very raw functionalities compared to other languages / testing frameworks (jUnit)
+* How to avoid circular dependencies
+* Coverage / benchmark / profiling
+
+* Mocking dependencies:
+- interfaces
+- package level functions
+
+---
+* Table tests
+Easy to add new test cases
+Give a name to the table -> easy to retrieve failed test
+WIth functions!
+* Golden file tests:
+Read the output from a file and compare. Provide a way using a test flag to update the content of the file.
+Used in the standard lib to test fmt
+* Flags:
+- slow tests
+* Integration tests
+* Testing http calls
+* Test fixtures - go test sets pwd as package dir. Use relative path to store configs, data, etc
+
+* Test helpers: avoid, better copy / paste. Don't return errors in helpers, let them fail passing *T. More readable.
+If test helper returns finalizers (ie close file), let them return as func() that gets deferred
