@@ -18,46 +18,66 @@ federico@list-group.com
 - Testing with go
 - Advanced testing patterns with go
 
-* The need for tests
-
-We do change our code.
+* We do change our code.
 Reasons we change:
 - New features
 - Fixing a bug
 - Refactor (better readability / easier to maintain)
 - Optimization
 
-* Every time we change a program that is behaving in a correct way, we put it's correctness in discussion.
-We need to preserve the behaviour
-Correcntess
+: That's what they pay us for
 
-* What do we mean by testing
-
-Changes in a system can be made in two primary ways. I like to call them Edit and Pray and Cover and Modify. 
-Unfortunately, Edit and Pray is pretty much the industry standard
-
-
-* The cost of a bug
-Grafico di quanto costa un bug 
-
-* Manual tests?
-Colabrodo
+* We need to preserve the behaviour
+: Every time we change a program that is behaving in a correct way, we put it's correctness in discussion.
+: This is important. When we change a part of our code, the rest is supposed to preserve its behaviour
 
 * Why do we need tests
+
+* The cost of a bug
+Fixing a production bug costs 100x more than fixing a bug at design time, and over 15x more than fixing a bug at implementation time.
+https://www.researchgate.net/publication/255965523_Integrating_Software_Assurance_into_the_Software_Development_Life_Cycle_SDLC
+Grafico di quanto costa un bug 
+
+* 
+
+_Changes in a system can be made in two primary ways. I like to call them Edit and Pray and Cover and Modify. 
+Unfortunately, Edit and Pray is pretty much the industry standard_
+
+.caption Micheal Feathers - Working effectively with legacy code
+
+: Covering means covering with tests
+
+* What about manual tests?
+Colabrodo
+
+* Unit tests
+
+
 * What to test
-* Intro to TDD
 - Write testable code
 
 Avoid global state. Make global state as config that can be changed / clear it.
-TODO Rubare un po' di concetti da working effectively from legacy code
 
+Use packages to separate units of functionality
 Isolate dependencies
 TODO : c'era un articolo su come organizzare i progetti in moduli
-TODO parlare del fatto ceh ogni modulo deve essere isolato e avere poche dipendenze
+Group packages by dependencies. Easier to mock.
+Make your stuff configurable: paths, ports, timeouts
+
+* What to test:
+try to test only public functions
+black box testing of package
+
+If you have a complex functionality -> unit test it
+Test the layers
 
 * CI
 
 * Testing in Go
+
+* Packages
+* Interfaces
+
 * Where to put test files
 How does a test look like. Very raw functionalities compared to other languages / testing frameworks (jUnit)
 * How to avoid circular dependencies
@@ -65,6 +85,7 @@ How does a test look like. Very raw functionalities compared to other languages 
 
 * Mocking dependencies:
 - interfaces
+Interfaces are mocking points. Always ask if you should mock
 - package level functions
 
 ---
@@ -72,6 +93,7 @@ How does a test look like. Very raw functionalities compared to other languages 
 Easy to add new test cases
 Give a name to the table -> easy to retrieve failed test
 WIth functions!
+testdata ignored by go
 * Golden file tests:
 Read the output from a file and compare. Provide a way using a test flag to update the content of the file.
 Used in the standard lib to test fmt
@@ -83,3 +105,16 @@ Used in the standard lib to test fmt
 
 * Test helpers: avoid, better copy / paste. Don't return errors in helpers, let them fail passing *T. More readable.
 If test helper returns finalizers (ie close file), let them return as func() that gets deferred
+
+* Networking
+Test the real connection, don't mock connections.
+Any protocol
+
+* Subprocessing
+Test the real subprocess / use a mock subprocess
+Configure the executable name
+Can be the process itself GO_WANT_HELPER_PROCESS
+
+* Slow tests:
+// +build integration
+go test -tags=integration
