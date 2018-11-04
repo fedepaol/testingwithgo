@@ -18,6 +18,8 @@ federico@list-group.com
 - Testing with go
 - Advanced testing patterns with go
 
+* The need for tests
+
 * We do change our code.
 Reasons we change:
 - New features
@@ -28,60 +30,259 @@ Reasons we change:
 : That's what they pay us for
 
 * We need to preserve the behaviour
+
+.image behaviour.png 
+
 : Every time we change a program that is behaving in a correct way, we put it's correctness in discussion.
 : This is important. When we change a part of our code, the rest is supposed to preserve its behaviour
 
-* Why do we need tests
 
 * The cost of a bug
 Fixing a production bug costs 100x more than fixing a bug at design time, and over 15x more than fixing a bug at implementation time.
-https://www.researchgate.net/publication/255965523_Integrating_Software_Assurance_into_the_Software_Development_Life_Cycle_SDLC
-Grafico di quanto costa un bug 
+
+TODO insert picture here
+
+.caption from [[https://www.researchgate.net/publication/255965523_Integrating_Software_Assurance_into_the_Software_Development_Life_Cycle_SDLC][TODO INSERT TITLE HERE]]
 
 * 
 
-_Changes in a system can be made in two primary ways. I like to call them Edit and Pray and Cover and Modify. 
-Unfortunately, Edit and Pray is pretty much the industry standard_
+Changes in a system can be made in two primary ways. I like to call them Edit and Pray and Cover and Modify. 
+
+Unfortunately, Edit and Pray is pretty much the industry standard
+
 
 .caption Micheal Feathers - Working effectively with legacy code
 
 : Covering means covering with tests
 
 * What about manual tests?
-Colabrodo
 
-* Unit tests
+* What Unit tests are
+
+".. We asked him (Kent Beck) for his definition and he replied with something like "in the morning of my training course I cover 24 different definitions of unit test."
+.caption Martin Fowler [[https://martinfowler.com/bliki/UnitTest.html][ibliki: UnitTest]]
+
+* Common characteristics of tests
+
+- Low level, focus on a small part of the system
+- Written by programmers
+- Faster than normal tests
+
+* What to treat like a unit?
+
+- A class?
+- A function?
+
+: We will see that go takes a slightly different approach
+
+* Other benefits of testing
+- Quality
+- Self documenting
+- Result in a better design
+- Reduce costs
+- Automation
+
+* Testing in Go
+
+: or, what do you need to know in order to understand the next part
+
+* User defined data structures
+
+Go Structs
+
+	type book struct {
+		title string
+		author string
+	}
+
+	var b book	// zero value
+	var b1 book{title:"Golang"} // literal initializer
+
+: no inheritance
+: no generics
+: enforce composition through embedding
+
+* Methods
+
+- Just a special kind of functions (they have a receiver)
+- Explicitly associated to objects or pointers
+
+	type Dog struct {
+		Animal
+	}
+
+	func (d Dog) bark() {
+		// bark
+	}
+
+	func (d *Dog) feed() {
+		d.weight++
+	}
+
+: can assign methods to any type, even those you don't own
+
+* Interfaces
+
+- Abstract types defining a behaviour
+- Satisfied implicitly 
+
+	type Driveable interface {
+		func Drive() int
+	}
+
+	func (c Car) Drive (km int) {/* */}
+	func (b Bike) Drive (km int) {/* */}
+
+	var c Car{wheels : 4}
+	var d Driveable = c
+
+_If_it_walks_like_a_duck_and_quacks_as_a_duck,_it's_a_duck_
+
+: But the compiler tells you if you made a mistake
+: You can create interfaces that are satisfied by structs you don't own.
+
+* Interfaces (2)
+
+- Can be composed
+
+	type ReadWriter interface {
+		Reader
+		Writer
+	}
 
 
-* What to test
-- Write testable code
+- Can be checked
 
+	c, ok := d.(Car) // true
+	c, ok := d.(Bike)  // false
+
+	switch d.(type) {
+		case Car: //
+	}
+
+: you can retro assign an interface to any object
+: Interfaces can be used as a placeholder to use different concrete types 
+
+* Encapsulation
+
+.image encapsulation.jpeg _ 400
+
+* Encapsulation in Go:
+
+- The visibility is related to the _package_
+- Multiple files can belong to the same package
+- The visibility is toggled by uppercasing / lowercasing 
+
+
+Every file belongs to a package
+
+	package mypackage
+
+	var Exported int
+	var notExported string
+
+
+* The go test tool
+
+* Test files
+
+From the stdlib strings package:
+
+	src/.../
+		strings/
+			builder.go 	
+			builder_test.go
+			compare.go
+			compare_test.go
+			example_test.go
+			export_test.go
+			reader.go
+			reader_test.go
+			replace.go
+			replace_test.go
+			search.go
+			search_test.go
+			strings.go
+			strings_decl.go
+			strings_test.go
+
+: Files *_test are not part of the package. They are built by go test
+: go test generates a temporary main and executes it
+
+* Test functions
+
+.code totest.go
+
+.code totest_test.go
+
+: The go test tool looks for function that look like Test*
+: Very raw functionalities compared to other languages / testing frameworks (jUnit)
+
+* Go test execution
+
+A failing test:
+
+	go test
+	--- FAIL: TestReverse (0.00s)
+	    totest_test.go:8: Reverse("gdgolleh") = hellogdg
+	FAIL
+	exit status 1
+	FAIL    _/home/fedepaol/devel/talks/testingwithgo       0.001s
+
+A passing test:
+
+	go test
+	PASS
+	ok      _/home/fedepaol/devel/talks/testingwithgo       0.001s
+
+: We don't want output when a test passes. We do want output with info when a test fails
+
+* Other go test features
+
+* Coverage
+
+	go test -cover
+		PASS
+		coverage: 100.0% of statements
+		ok  	_/home/fedepaol/devel/talks/testingwithgo	0.001s
+
+Also, `go tool cover`
+
+	Usage of 'go tool cover':
+	Given a coverage profile produced by 'go test':
+		go test -coverprofile=c.out
+
+	Open a web browser displaying annotated source code:
+		go tool cover -html=c.out
+
+* Benchmark
+
+.code totestbench_test.go
+
+	go test -bench .
+		goos: linux
+		goarch: amd64
+		BenchmarkReverse-4      30000000                40.7 ns/op
+		PASS
+		ok      _/home/fedepaol/devel/talks/testingwithgo       1.271s
+
+* Also:
+
+- test results are cached
+- Race detector
+
+* Testable code
 Avoid global state. Make global state as config that can be changed / clear it.
-
 Use packages to separate units of functionality
 Isolate dependencies
-TODO : c'era un articolo su come organizzare i progetti in moduli
 Group packages by dependencies. Easier to mock.
 Make your stuff configurable: paths, ports, timeouts
-
-* What to test:
 try to test only public functions
 black box testing of package
 
 If you have a complex functionality -> unit test it
 Test the layers
 
-* CI
-
-* Testing in Go
-
-* Packages
-* Interfaces
-
-* Where to put test files
-How does a test look like. Very raw functionalities compared to other languages / testing frameworks (jUnit)
-* How to avoid circular dependencies
-* Coverage / benchmark / profiling
 
 * Mocking dependencies:
 - interfaces
