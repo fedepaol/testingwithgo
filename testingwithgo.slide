@@ -272,16 +272,50 @@ Also, `go tool cover`
 - Race detector
 
 * Testable code
-Avoid global state. Make global state as config that can be changed / clear it.
-Use packages to separate units of functionality
-Isolate dependencies
-Group packages by dependencies. Easier to mock.
-Make your stuff configurable: paths, ports, timeouts
-try to test only public functions
-black box testing of package
 
-If you have a complex functionality -> unit test it
-Test the layers
+* What to test
+
+
+Go forces us to split our code in "libraries" and client code
+
+- try to test only public functions
+- test private functions worth being tested
+- protip: use _package_xxx__test_
+- test all the layers
+
+* Package organization
+
+- Use packages to isolate external dependencies
+- Packages by functionality
+- Layered packages
+- Dependency Injection
+
+: Ideally one package per dependency, it's easier to mock external dependencies
+: Layering packages allow to test the whole 
+
+* State
+- Avoid global state
+- Have global configuration
+- Make parameters configurable
+
+: No hardcoded hosts, ports, timeouts. Have them configurable (with a default)
+: local variables / environment
+: tests should be able to override them
+
+*Functions*
+
+- Have functions accept interfaces and return concrete types
+- Prefer functions to methods
+
+: The second one is counterintuitive if you come from oop. If the object does not get changed, is more clear what is teh input / output of the function
+
+* Interfaces
+
+- Interfaces are mocking points
+- You can build interfaces against types you don't own
+- Try to stick to stdlibs interfaces
+
+: Should be used with care. 
 
 
 * Mocking dependencies:
