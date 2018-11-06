@@ -275,8 +275,7 @@ Also, `go tool cover`
 
 * What to test
 
-
-Go forces us to split our code in "libraries" and client code
+Go naturally forces us to split our code in "libraries" and client code
 
 - try to test only public functions
 - test private functions worth being tested
@@ -308,6 +307,22 @@ Go forces us to split our code in "libraries" and client code
 - Prefer functions to methods
 
 : The second one is counterintuitive if you come from oop. If the object does not get changed, is more clear what is teh input / output of the function
+: Todo expand with an example?
+
+* Accept interfaces and return concrete types
+
+	// Don't
+	func LineCounter(file os.File) int {
+		...
+	}
+
+	// Do
+	func LineCounter(r io.Reader) int {
+		...
+	}
+
+: More generic. You can pass a stream from a socket, a file, whatever
+: You can pass mocks: a fixed string
 
 * Interfaces
 
@@ -318,17 +333,114 @@ Go forces us to split our code in "libraries" and client code
 : Should be used with care. 
 
 
-* Mocking dependencies:
-- interfaces
-Interfaces are mocking points. Always ask if you should mock
-- package level functions
+* Mocking dependencies
 
----
+* Interfaces:
+
+Let's say we have a libray like this:
+
+	type CakeClient struct {
+	}
+
+	// Ingredients returns the list of ingredients for the given cake
+	func (l CakeClient) Ingredients(cake string) ([]string, err) {
+		...
+	}
+
+And we want to test a function like this:
+
+	func OrderIngredients(cake string, client CakeClient) {
+		...
+		ingredients, err := client.Ingredients(cake)
+		...
+	}
+
+: The problem is, Ingredients hit a webserver every time. We don't want to do that in our test
+: It's slow, we depned on the network
+
+* Interfaces:
+
+We can build an interface satisfied by CakeClient
+
+	type Ingredienter interface {
+		Ingredients(cake string) ([]string, err)
+	}
+
+And have our function accept an interface
+
+	func OrderIngredients(cake string, i Ingredienter) {
+		...
+		ingredients, err := i.Ingredients(cake)
+		...
+	}
+
+: What have we done here? We tailored our interface against the type
+
+* Interfaces:
+
+	type MockIngredienter struct {
+		IngredientsMock func(cake string) ([]string, err)
+	}
+
+	func (m MockIngredienter) Ingredients(cake string) ([]string, err) {
+		return m.IngredientsMock(cake)
+	}
+
+* Interfaces:
+
+	func TestOrder(t *testing.T) {
+		res := []string{"Flour", "Eggs", "Chocolate"}
+
+		m := MockIngredienter{
+			func(cake string) ([]string, err){
+				return res, nil
+			}
+		}
+
+		err := OrderIngredients("tiramisu", m)
+		if err != nil {
+			t.Errorf(`error with OrderIngredients("tiramisu", m)`)
+		}
+	}
+
+: To sum up, we had a type, we implemented an interface satisfied by it, we used it and we mocked it.
+
+* Package level functions
+
+What if Ingredients was a plain function of the package?
+
+	func Ingredients(cake string) ([]string, err) {
+
+	}
+
+Here is how to mock it
+
+	var retrieveIngredients = testingwithgo.Ingredients
+
+	func OrderIngredients(cake string) err {
+		// testingwithgo.Ingredients(cake)
+		retrieveIngredients(cake)
+	}
+
+* Package level functions (2)
+
+	func TestOrderFunc(t *testing.T) {
+		res := []string{"Flour", "Eggs", "Chocolate"}
+		retrieveIngredients = func(cake string) ([]string, err) {
+			return res, nil
+		}
+		defer retrieveIngredients = testingwithgo.Ingredients
+		err := OrderIngredients("tiramisu")
+	}
+
+* Do we always need mocks?
+
 * Table tests
 Easy to add new test cases
 Give a name to the table -> easy to retrieve failed test
 WIth functions!
 testdata ignored by go
+
 * Golden file tests:
 Read the output from a file and compare. Provide a way using a test flag to update the content of the file.
 Used in the standard lib to test fmt
@@ -340,6 +452,12 @@ Used in the standard lib to test fmt
 
 * Test helpers: avoid, better copy / paste. Don't return errors in helpers, let them fail passing *T. More readable.
 If test helper returns finalizers (ie close file), let them return as func() that gets deferred
+-- NON SO SE QUESTO LO METTEREI
+
+* Mockery
+* Testify
+* Afero
+* Http
 
 * Networking
 Test the real connection, don't mock connections.
@@ -349,7 +467,10 @@ Any protocol
 Test the real subprocess / use a mock subprocess
 Configure the executable name
 Can be the process itself GO_WANT_HELPER_PROCESS
+-- NON SO SE QUESTO LO METTEREI
 
+Parlare di dockertest 
+https://github.com/ory/dockertest
 * Slow tests:
 // +build integration
 go test -tags=integration
