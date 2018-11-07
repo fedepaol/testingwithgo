@@ -305,8 +305,8 @@ Go naturally forces us to split our code in "libraries" and client code
 * Package organization
 
 - Use packages to isolate external dependencies
-- Packages by functionality
-- Layered packages
+- Packages by functionality  (eg: https://github.com/aws/aws-sdk-go/tree/master/service)
+- Layered packages 
 - Dependency Injection
 
 : Ideally one package per dependency, it's easier to mock external dependencies
