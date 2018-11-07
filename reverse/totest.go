@@ -1,10 +1,10 @@
-package testingwithgo
+package reverse
 
+// START OMIT
 import (
 	"strings"
 )
 
-// START OMIT
 func Reverse(s string) string {
 	b := strings.Builder{}
 	for i := range s {
@@ -12,5 +12,4 @@ func Reverse(s string) string {
 	}
 	return b.String()
 }
-
 // END OMIT

@@ -211,9 +211,8 @@ From the stdlib strings package:
 
 * Test functions
 
-.code totest.go
-
-.code totest_test.go
+.code reverse/totest.go 
+.code reverse/totest_test.go
 
 : The go test tool looks for function that look like Test*
 : Very raw functionalities compared to other languages / testing frameworks (jUnit)
@@ -257,19 +256,40 @@ Also, `go tool cover`
 
 * Benchmark
 
-.code totestbench_test.go
+.code reverse/totestbench_test.go /START OMIT/,/END OMIT/
 
-	go test -bench .
-		goos: linux
+* Benchmark
+	go test -bench=.
+		goos: darwin
 		goarch: amd64
-		BenchmarkReverse-4      30000000                40.7 ns/op
+		pkg: github.com/fedepaol/testingwithgo/reverse
+								#Max number          #ns for each
+								of iteration         iteration
+		BenchmarkReverse4-4      5000000               226 ns/op
+		BenchmarkReverse8-4      3000000               421 ns/op
+		BenchmarkReverse16-4     1000000              1118 ns/op
+		BenchmarkReverse32-4     1000000              1845 ns/op
+		BenchmarkReverse64-4      500000              2808 ns/op
 		PASS
-		ok      _/home/fedepaol/devel/talks/testingwithgo       1.271s
+		ok      github.com/fedepaol/testingwithgo/reverse       8.598s
+
+- Each benchmark is run for a minimum of 1 second by default
+- The value of b.N is increased in the sequence 1, 2, 5, 10, 20, 50, …
+- The final BenchmarkReverse64 only ran 500000 times becaus each run has the average of 0,000002 sec (~2808ns/op) .
+- if your number of runs are statically weak increase the bench time with `-benchtime=20s`
 
 * Also:
 
-- test results are cached
+- test results are cached: for same binary and same flags
+disable 
+
+	go clean -testcache
+
 - Race detector
+	go test -race mypackage
+When the -race command-line flag is set, the compiler instruments all memory accesses 
+with code that records when and how the memory was accessed, 
+while the runtime library watches for unsynchronized accesses to shared variables
 
 * Testable code
 
