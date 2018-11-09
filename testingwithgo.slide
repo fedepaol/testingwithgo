@@ -478,8 +478,16 @@ If test helper returns finalizers (ie close file), let them return as func() tha
 -- NON SO SE QUESTO LO METTEREI
 
 * Mockery
+ - repo [https://github.com/vektra/mockery]
+ - generate code from interfaces
+ - similar to Java's Mockito 
+    mock.On("MethodName", args...).Return(...)
+ - quantifiers `Once()`, `None()`, `Times(n)`
+ 
 * Testify
 * Afero
+ - mocks a filesystem. 
+ - in memory or chrooted(~similar)
 * Http
 
 * Networking
