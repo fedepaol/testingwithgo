@@ -456,14 +456,19 @@ Here is how to mock it
 		err := OrderIngredients("tiramisu")
 	}
 
-* Do we always need mocks?
+
 
 * Table tests
 - Easy to add new test cases, just add new entry in the struct
+: composite literals and anonymous structs, to allow you to write related tests in a compact form
 - Give a name to the table -> easy to retrieve failed test 
 : goland allows to run a single test 
 - With functions, useful with mockery to instruct the mock beahviour (eg: return with error)
 - testdata ignored by go
+	
+* Table tests
+.code httptest/fibonaccitest.go
+
 
 * Golden file tests:
 Read the output from a file and compare. Provide a way using a test flag to update the content of the file.
@@ -479,18 +484,22 @@ If test helper returns finalizers (ie close file), let them return as func() tha
 -- NON SO SE QUESTO LO METTEREI
 
 * Mockery
-- repo [https://github.com/vektra/mockery]
+- https://github.com/vektra/mockery
 - generate code from interfaces
+    mockery -name MyDao -inpkg .
 - similar to Java's Mockito 
 
     mock.On("MethodName", args...).Return(...)
 - quantifiers `Once()`, `None()`, `Times(n)`
  
 * Testify
+
+* Do we always need mocks?
+
 * Afero
 - mocks a filesystem. 
 - in memory or chrooted(~similar)
-- useful for setup and teard down an isolated env every time
+- useful for setup and tear down an isolated environment every time
 
 * Networking
 - Test the real connection, don't mock connections.
