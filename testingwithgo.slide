@@ -459,10 +459,11 @@ Here is how to mock it
 * Do we always need mocks?
 
 * Table tests
-Easy to add new test cases
-Give a name to the table -> easy to retrieve failed test
-WIth functions!
-testdata ignored by go
+- Easy to add new test cases, just add new entry in the struct
+- Give a name to the table -> easy to retrieve failed test 
+: goland allows to run a single test 
+- With functions, useful with mockery to instruct the mock beahviour (eg: return with error)
+- testdata ignored by go
 
 * Golden file tests:
 Read the output from a file and compare. Provide a way using a test flag to update the content of the file.
@@ -478,23 +479,41 @@ If test helper returns finalizers (ie close file), let them return as func() tha
 -- NON SO SE QUESTO LO METTEREI
 
 * Mockery
- - repo [https://github.com/vektra/mockery]
- - generate code from interfaces
- - similar to Java's Mockito 
+- repo [https://github.com/vektra/mockery]
+- generate code from interfaces
+- similar to Java's Mockito 
+
     mock.On("MethodName", args...).Return(...)
- - quantifiers `Once()`, `None()`, `Times(n)`
+- quantifiers `Once()`, `None()`, `Times(n)`
  
 * Testify
 * Afero
- - mocks a filesystem. 
- - in memory or chrooted(~similar)
-* Http
- - httptest from [https://golang.org/pkg/net/http/httptest/#pkg-examples]
- -  setup a real server ant test it
- 
+- mocks a filesystem. 
+- in memory or chrooted(~similar)
+- useful for setup and teard down an isolated env every time
+
 * Networking
-Test the real connection, don't mock connections.
-Any protocol
+- Test the real connection, don't mock connections.
+- Any protocol
+- Setup a real server and test your handlers without mocks (eg http WebServer) 
+
+	func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "application/json")
+		io.WriteString(w, `{"alive": true}`)
+	}
+    
+* Networking(eg: http)
+- *net/http/httptest*
+.code httptest/httptest.go /START OMIT/,/END OMIT/
+
+: Create a request to pass to our handler. We don't have any query parameters for now, so we'll
+: pass 'nil' as the third parameter.
+: We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
+: Our handlers satisfy http.Handler, so we can call their ServeHTTP method
+: directly and pass in our Request and ResponseRecorder.
+
+
 
 * Subprocessing
 Test the real subprocess / use a mock subprocess
