@@ -489,7 +489,9 @@ If test helper returns finalizers (ie close file), let them return as func() tha
  - mocks a filesystem. 
  - in memory or chrooted(~similar)
 * Http
-
+ - httptest from [https://golang.org/pkg/net/http/httptest/#pkg-examples]
+ -  setup a real server ant test it
+ 
 * Networking
 Test the real connection, don't mock connections.
 Any protocol
