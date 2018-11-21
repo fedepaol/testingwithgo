@@ -20,6 +20,10 @@ federico@list-group.com
 
 * The need for tests
 
+* 
+
+.image realmen.jpg 500 _
+
 * We do change our code.
 Reasons we change:
 - New features
@@ -64,6 +68,7 @@ Unfortunately, Edit and Pray is pretty much the industry standard
 
 * Common characteristics of tests
 
+- Functions with known input & known output
 - Low level, focus on a small part of the system
 - Written by programmers
 - Faster than normal tests
@@ -211,8 +216,8 @@ From the stdlib strings package:
 
 * Test functions
 
-.code reverse/totest.go 
-.code reverse/totest_test.go
+.code reverse/totest.go /START OMIT/,/END OMIT/
+.code reverse/totest_test.go /START OMIT/,/END OMIT/
 
 : The go test tool looks for function that look like Test*
 : Very raw functionalities compared to other languages / testing frameworks (jUnit)
@@ -245,7 +250,7 @@ A passing test:
 		coverage: 100.0% of statements
 		ok  	_/home/fedepaol/devel/talks/testingwithgo	0.001s
 
-Also, `go tool cover`
+`go`tool`cover`:
 
 	Usage of 'go tool cover':
 	Given a coverage profile produced by 'go test':
@@ -273,23 +278,24 @@ Also, `go tool cover`
 		PASS
 		ok      github.com/fedepaol/testingwithgo/reverse       8.598s
 
-- Each benchmark is run for a minimum of 1 second by default
-- The value of b.N is increased in the sequence 1, 2, 5, 10, 20, 50, …
-- The final BenchmarkReverse64 only ran 500000 times becaus each run has the average of 0,000002 sec (~2808ns/op) .
-- if your number of runs are statically weak increase the bench time with `-benchtime=20s`
+: Each benchmark is run for a minimum of 1 second by default
+: The value of b.N is increased in the sequence 1, 2, 5, 10, 20, 50, …
+: The final BenchmarkReverse64 only ran 500000 times becaus each run has the average of 0,000002 sec (~2808ns/op) .
+: if your number of runs are statically weak increase the bench time with `-benchtime=20s`
 
-* Also:
+* Pro tips
 
 - test results are cached: for same binary and same flags
-disable 
+To disable caching:
 
 	go clean -testcache
 
 - Race detector
 	go test -race mypackage
-When the -race command-line flag is set, the compiler instruments all memory accesses 
-with code that records when and how the memory was accessed, 
-while the runtime library watches for unsynchronized accesses to shared variables
+
+: When the -race command-line flag is set, the compiler instruments all memory accesses 
+: with code that records when and how the memory was accessed, 
+: while the runtime library watches for unsynchronized accesses to shared variables
 
 * Testable code
 
@@ -301,6 +307,7 @@ Go naturally forces us to split our code in "libraries" and client code
 - test private functions worth being tested
 - protip: use _package_xxx__test_
 - test all the layers
+- test positive and counterpositive results
 
 * Package organization
 
@@ -360,7 +367,7 @@ Go naturally forces us to split our code in "libraries" and client code
 
 * Interfaces:
 
-Let's say we have a libray like this:
+Let's say we have a library like this:
 
 	type CakeClient struct {
 	}
@@ -467,7 +474,7 @@ Here is how to mock it
 - testdata ignored by go
 	
 * Table tests
-.code httptest/fibonaccitest.go
+: .code httptest/fibonaccitest.go
 
 
 * Golden file tests:
