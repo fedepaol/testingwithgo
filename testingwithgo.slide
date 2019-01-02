@@ -289,6 +289,10 @@ To disable caching:
 - Race detector
 	go test -race mypackage
 
+: Golang caches tests result in order to not repeat the test in case the code did not
+: change. 
+: The cache only applies to "go test package-list", not to "go test" without a package list. 
+
 : When the -race command-line flag is set, the compiler instruments all memory accesses 
 : with code that records when and how the memory was accessed, 
 : while the runtime library watches for unsynchronized accesses to shared variables
