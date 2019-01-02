@@ -476,7 +476,14 @@ Each variant of the input and the output is stored in a map (table)
 : goland allows to run a single test 
 - With functions, useful with mockery to instruct the mock beahviour (eg: return with error)
 
+* Mockery
+- https://github.com/vektra/mockery
+- generate code from interfaces
+    mockery -name MyDao -inpkg .
+- similar to Java's Mockito 
 
+    mock.On("MethodName", args...).Return(...)
+- quantifiers `Once()`, `None()`, `Times(n)`
 
 * Use flags in tests
 
@@ -510,17 +517,7 @@ Each variant of the input and the output is stored in a map (table)
 	}
 
 : Another approach found in the go std lib. go fmt for example
-: errors are imoitted
-
-
-* Mockery
-- https://github.com/vektra/mockery
-- generate code from interfaces
-    mockery -name MyDao -inpkg .
-- similar to Java's Mockito 
-
-    mock.On("MethodName", args...).Return(...)
-- quantifiers `Once()`, `None()`, `Times(n)`
+: errors are omitted
  
 * Testify
 
