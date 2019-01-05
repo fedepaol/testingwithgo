@@ -55,7 +55,7 @@ Unfortunately, Edit and Pray is pretty much the industry standard
 
 : Covering means covering with tests
 
-* What about manual tests?
+* When we say testing we mean Unit Testing
 
 * What Unit tests are
 
@@ -76,7 +76,7 @@ Unfortunately, Edit and Pray is pretty much the industry standard
 
 : We will see that go takes a slightly different approach
 
-* Other benefits of testing
+* Benefits of testing
 - Quality
 - Self documenting
 - Result in a better design
