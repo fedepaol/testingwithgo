@@ -289,6 +289,10 @@ To disable caching:
 - Race detector
 	go test -race mypackage
 
+: Golang caches tests result in order to not repeat the test in case the code did not
+: change. 
+: The cache only applies to "go test package-list", not to "go test" without a package list. 
+
 : When the -race command-line flag is set, the compiler instruments all memory accesses 
 : with code that records when and how the memory was accessed, 
 : while the runtime library watches for unsynchronized accesses to shared variables
@@ -476,7 +480,14 @@ Each variant of the input and the output is stored in a map (table)
 : goland allows to run a single test 
 - With functions, useful with mockery to instruct the mock beahviour (eg: return with error)
 
+* Mockery
+- https://github.com/vektra/mockery
+- generate code from interfaces
+    mockery -name MyDao -inpkg .
+- similar to Java's Mockito 
 
+    mock.On("MethodName", args...).Return(...)
+- quantifiers `Once()`, `None()`, `Times(n)`
 
 * Use flags in tests
 
@@ -510,17 +521,7 @@ Each variant of the input and the output is stored in a map (table)
 	}
 
 : Another approach found in the go std lib. go fmt for example
-: errors are imoitted
-
-
-* Mockery
-- https://github.com/vektra/mockery
-- generate code from interfaces
-    mockery -name MyDao -inpkg .
-- similar to Java's Mockito 
-
-    mock.On("MethodName", args...).Return(...)
-- quantifiers `Once()`, `None()`, `Times(n)`
+: errors are omitted
  
 * Testify
 
