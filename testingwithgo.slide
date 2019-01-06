@@ -472,7 +472,8 @@ Each variant of the input and the output is stored in a map (table)
 .code httptest/fibonaccitest.go
 
 : Approach promoted by the go echosystem and often found in the go standard library
-:
+: Table Driven Tests: Each table entry is a complete test case with inputs and expected results
+
 
 * Table tests
 
