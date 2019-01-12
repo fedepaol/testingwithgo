@@ -464,6 +464,7 @@ Here is how to mock it
 	}
 
 
+* Table tests
 
 * Table tests
 
@@ -471,6 +472,8 @@ Each variant of the input and the output is stored in a map (table)
 .code httptest/fibonaccitest.go
 
 : Approach promoted by the go echosystem and often found in the go standard library
+: Table Driven Tests: Each table entry is a complete test case with inputs and expected results
+
 
 * Table tests
 
@@ -524,6 +527,52 @@ Each variant of the input and the output is stored in a map (table)
 : errors are omitted
  
 * Testify
+- github.com/stretchr/testify/assert
+- Easy assertions
+- Mocking
+- Testing suite interfaces and functions
+: approccio alla 'java'
+: ogni funzione di assert prende l'oggetto  testing.T. Se c'è un errore viene visualizzato tramite go test
+
+* Testify
+
+	func TestSomething(t *testing.T) {
+		// assert equality
+		assert.Equal(t, 123, 123, "they should be equal")
+		// assert inequality
+		assert.NotEqual(t, 123, 456, "they should not be equal")
+		// assert for nil (good for errors)
+		assert.Nil(t, object)
+		// assert for not nil (good when you expect something)
+		if assert.NotNil(t, object) {
+			// now we know that object isn't nil, we are safe to make
+			// further assertions without causing any errors
+			assert.Equal(t, "Something", object.Value)
+
+		}
+	}
+
+* Mock
+	type MyMockedObject struct{	
+		mock.Mock
+	}
+
+	//mocked method
+	func (m *MyMockedObject) DoSomething(number int) (bool, error) {
+		args := m.Called(number)
+		return args.Bool(0), args.Error(1)
+	}
+
+	func TestSomething(t *testing.T) {
+		// create an instance of our test object
+		testObj := new(MyMockedObject)
+		// setup expectations
+		testObj.On("DoSomething", 123).Return(true, nil)
+		// call the code we are testing
+		targetFuncThatDoesSomethingWithObj(testObj)
+		// assert that the expectations were met
+		testObj.AssertExpectations(t)
+	}
 
 * Do we always need mocks?
 
