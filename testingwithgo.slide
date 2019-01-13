@@ -471,8 +471,9 @@ Here is how to mock it
 Each variant of the input and the output is stored in a map (table)
 .code httptest/fibonaccitest.go
 
-: Approach promoted by the go echosystem and often found in the go standard library
-: Table Driven Tests: Each table entry is a complete test case with inputs and expected results
+: sfruttando le strutture anonime di GO
+: Table Driven Tests: Each table entry is a complete test case with inputs and expected results.
+: Approach promoted by the go echosystem and often found in the go standard library.
 
 
 * Table tests
@@ -482,6 +483,19 @@ Each variant of the input and the output is stored in a map (table)
 - Protip: give a name to the table entry 
 : goland allows to run a single test 
 - With functions, useful with mockery to instruct the mock beahviour (eg: return with error)
+      
+	func Test...(t *testing.T) {
+    	testCases := []struct{
+    	a, b, expected int, mock MyMock
+		}{
+			{a: 0, b: 0, expected: 0, mock: func()MyMock{ ... instantiate mock beahviour...}()},
+			{a: -1, b: 1, expected: 0, mock: func()MyMock{ ... instantiate mock beahviour...}()}
+		}
+		for _, tc := range testCases {
+			obj := MyObject{InjectedObj: tc.mock}
+			assert.Equal(t, t.expected, obj.FuncToTest(tc.a, tc.b))
+		}
+	}
 
 * Mockery
 - https://github.com/vektra/mockery
