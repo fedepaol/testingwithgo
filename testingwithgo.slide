@@ -471,10 +471,11 @@ Here is how to mock it
 Each variant of the input and the output is stored in a map (table)
 .code httptest/fibonaccitest.go
 
-: sfruttando le strutture anonime di GO
+: Sfruttando le strutture anonime di GO
 : Table Driven Tests: Each table entry is a complete test case with inputs and expected results.
 : Approach promoted by the go echosystem and often found in the go standard library.
-
+: Usa TDT anche se ti viene in mente un solo test case, nel caso si presentino bugs puoi facilmente
+: aggiungere successivamente quei test case che falliscono
 
 * Table tests
 
@@ -486,16 +487,31 @@ Each variant of the input and the output is stored in a map (table)
       
 	func Test...(t *testing.T) {
 		testCases := []struct{
-			a, b, expected int, mock MyMock
+			name string, a, b, expected int, mock MyMock
 		}{
-			{a: 0, b: 0, expected: 0, mock: func()MyMock{ ... instantiate mock beahviour...}()},
-			{a: -1, b: 1, expected: 0, mock: func()MyMock{ ... instantiate mock beahviour...}()}
+			{name: "caseOK", a: 0, b: 0, expected: 0, mock: func()MyMock{ ... instantiate mock beahviour...}()},
+			{name: "caseERR",  a: -1, b: 1, expected: 0, mock: func()MyMock{ ... instantiate mock beahviour...}()}
 		}
 		for _, tc := range testCases {
 			obj := &MyObject{InjectedObj: tc.mock}
-			assert.Equal(t, t.expected, obj.FuncToTest(tc.a, tc.b))
+			got := obj.FuncToTest(tc.a, tc.b)
+			if (tc.expected != got ) {
+				t.Errorf("%s fail expected: %d got: %d", tc.name, tc.expecte, got)
+			}
 		}
 	}
+
+* Test Fixtures
+
+	func MyawesomeTest(t *testing.T) {
+		data:= filepath.Join("testdata", "my-awesome-fixtures.json")
+		// do somenthing  with data
+	}
+
+- go test set pwd as package directory 
+- use simply relative path in tests eg: "testdata"
+- very useful for laoding config, model data, binary data etc 
+- go tool will ignore any directory matches the word testdata
 
 * Mockery
 - https://github.com/vektra/mockery
@@ -615,7 +631,6 @@ Each variant of the input and the output is stored in a map (table)
 * Networking(eg: http)
 - *net/http/httptest*
 .code httptest/httptest.go /START OMIT/,/END OMIT/
-
 : Create a request to pass to our handler. We don't have any query parameters for now, so we'll
 : pass 'nil' as the third parameter.
 : We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
@@ -623,27 +638,28 @@ Each variant of the input and the output is stored in a map (table)
 : directly and pass in our Request and ResponseRecorder.
 
 
-* Subprocessing
-Test the real subprocess / use a mock subprocess
-Configure the executable name
-Can be the process itself GO_WANT_HELPER_PROCESS
--- NON SO SE QUESTO LO METTEREI
-
 * Testing with docker
-
 - Integration and End2End testing
 - Instrumenting docker containers in tests (setup and teardow)
 - Testing real beahviour with third parts interaction
 - MySql, Oracle,  Mongo, Redis and every available docker image
 - `https://github.com/ory/dockertest` 
+- you should use 
 
 * Example
 .code httptest/testingwithdocker.go /START OMIT/,/END OMIT/
 : TestMain runs in the main goroutine and can do whatever 
 : setup and teardown is necessary around a call to m.Run()
 
-Parlare di dockertest 
-https://github.com/ory/dockertest
-* Slow tests:
-// +build integration
-go test -tags=integration
+* Short mode 
+	go test -short ./...
+- Tell long-running tests to shorten their run time
+- Used to avoid integration/e2e tests for example (dockertests)
+
+	//my long test running
+	func TestTimeConsuming(t *testing.T) {
+		if testing.Short() {
+	    	t.Skip("skipping test in short mode.")
+		}
+		...
+	}
