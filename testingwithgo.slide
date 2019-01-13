@@ -485,14 +485,14 @@ Each variant of the input and the output is stored in a map (table)
 - With functions, useful with mockery to instruct the mock beahviour (eg: return with error)
       
 	func Test...(t *testing.T) {
-    	testCases := []struct{
-    	a, b, expected int, mock MyMock
+		testCases := []struct{
+			a, b, expected int, mock MyMock
 		}{
 			{a: 0, b: 0, expected: 0, mock: func()MyMock{ ... instantiate mock beahviour...}()},
 			{a: -1, b: 1, expected: 0, mock: func()MyMock{ ... instantiate mock beahviour...}()}
 		}
 		for _, tc := range testCases {
-			obj := MyObject{InjectedObj: tc.mock}
+			obj := &MyObject{InjectedObj: tc.mock}
 			assert.Equal(t, t.expected, obj.FuncToTest(tc.a, tc.b))
 		}
 	}
@@ -591,9 +591,15 @@ Each variant of the input and the output is stored in a map (table)
 * Do we always need mocks?
 
 * Afero
-- mocks a filesystem. 
-- in memory or chrooted(~similar)
-- useful for setup and tear down an isolated environment every time
+- A FileSystem Abstraction System for Go
+- Useful to mocks a filesystem.  
+- In memory or chrooted(~similar) filesystems (and many others...)
+- Useful for setup and tear down an isolated environment every time. 
+- Write testable code. Use an FS abstraction not `os` package directly.
+: you need to write your functional code by injecting your FS Abstraction
+: because in golang FS funtion are called statically by using os.OpenFile
+
+
 
 * Networking
 - Test the real connection, don't mock connections.
@@ -617,12 +623,24 @@ Each variant of the input and the output is stored in a map (table)
 : directly and pass in our Request and ResponseRecorder.
 
 
-
 * Subprocessing
 Test the real subprocess / use a mock subprocess
 Configure the executable name
 Can be the process itself GO_WANT_HELPER_PROCESS
 -- NON SO SE QUESTO LO METTEREI
+
+* Testing with docker
+
+- Integration and End2End testing
+- Instrumenting docker containers in tests (setup and teardow)
+- Testing real beahviour with third parts interaction
+- MySql, Oracle,  Mongo, Redis and every available docker image
+- `https://github.com/ory/dockertest` 
+
+* Example
+.code httptest/testingwithdocker.go /START OMIT/,/END OMIT/
+: TestMain runs in the main goroutine and can do whatever 
+: setup and teardown is necessary around a call to m.Run()
 
 Parlare di dockertest 
 https://github.com/ory/dockertest
