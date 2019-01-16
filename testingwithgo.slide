@@ -308,7 +308,7 @@ To disable caching:
 : with code that records when and how the memory was accessed, 
 : while the runtime library watches for unsynchronized accesses to shared variables
 
-* Testable code
+* Testable Code
 
 * What to test
 
