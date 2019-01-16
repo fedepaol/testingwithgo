@@ -493,14 +493,12 @@ Each variant of the input and the output is stored in a map (table)
 		}{
 			{
 			 name: "caseOK", 
-			 a: 0, b: 0, 
-			 expected: 0, 
+			 a: 0, b: 0, expected: 0, 
 			 mock: func()MyMock{ ... instantiate mock beahviour...}()
 			 },
 			{
 			name: "caseERR",  
-			a: -1, b: 1, 
-			expected: 0,
+			a: -1, b: 1, expected: 0,
 			mock: func()MyMock{ ... instantiate mock beahviour...}()
 			},
 		}
@@ -579,7 +577,6 @@ Each variant of the input and the output is stored in a map (table)
 * Testify
 
 	func TestSomething(t *testing.T) {
-		
 		assert.Equal(t, 123, 123, "they should be equal")
 		
 		assert.NotEqual(t, 123, 456, "they should not be equal")
@@ -603,13 +600,12 @@ Each variant of the input and the output is stored in a map (table)
 	}
 
 	func TestSomething(t *testing.T) {
-		// create an instance of our test object
 		testObj := new(MyMockedObject)
-		// setup expectations
+		
 		testObj.On("DoSomething", 123).Return(true, nil)
-		// call the code we are testing
+		
 		targetFuncThatDoesSomethingWithObj(testObj)
-		// assert that the expectations were met
+		
 		testObj.AssertExpectations(t)
 	}
 
