@@ -1,4 +1,4 @@
-Intro to code testing with go
+Intro to code testing with Go
 
 Federico Paolinelli & Susanna Martinelli
 List
@@ -17,6 +17,8 @@ fedepaol@gmail.com / susannamartinelli@gmail.com
 
 .image realmen.jpg 500 _
 
+: L'utilizzo di unit test e` una pratica comune nell'industria e indice di qualita`
+
 * We do change our code.
 Reasons we change:
 - New features
@@ -32,16 +34,22 @@ Reasons we change:
 
 : Every time we change a program that is behaving in a correct way, we put it's correctness in discussion.
 : This is important. When we change a part of our code, the rest is supposed to preserve its behaviour
+: Testing helps us to understand if the behaviour is changed
 
 
 * The cost of fixing a bug
 
 - during development : 100 $
 - during a QA testing phase : 1500 $
-- in production : 10000 $
+- in production : _The_sky_is_the_limit_
+
+"In August 2012 Knight Capital Group Inc., one of America’s largest trading firms, mistakenly sent out more than four million stock orders in less than an hour [...] The software bug caused over $440 million in losses, which is almost four times what the company made in 2011."
 
 .caption from [[http://blog.celerity.com/the-true-cost-of-a-software-bug][The true cost of a software bug]]
 
+
+
+: Ovviamente se il comportamento non e` preservato, si traduce in un bug dell'applicazione
 : Fixing a production bug costs 100x more than fixing a bug at design time, and over 15x more than fixing a bug at implementation time.
 
 * 
@@ -68,6 +76,9 @@ Unfortunately, Edit and Pray is pretty much the industry standard
 - Low level, focus on a small part of the system
 - Written by programmers
 - Faster than normal tests
+
+: known input e know output e` importante. Se il codice interagisce con elementi esterni di cui non controlliamo il comportamento dobbiamo
+: trovare modi per controllarlo (o sostituirlo con degli alias)
 
 * What to treat like a unit?
 
@@ -379,7 +390,7 @@ Let's say we have a library like this:
 
 And we want to test a function like this:
 
-	func OrderIngredients(cake string, client CakeClient) {
+	func OrderIngredients(cake string, client CakeClient) ([]string, error) {
 		...
 		ingredients, err := client.Ingredients(cake)
 		...
@@ -398,7 +409,7 @@ We can build an interface satisfied by CakeClient
 
 And have our function accept an interface
 
-	func OrderIngredients(cake string, i Ingredienter) {
+	func OrderIngredients(cake string, i Ingredienter) ([]string, error)  {
 		...
 		ingredients, err := i.Ingredients(cake)
 		...
@@ -427,10 +438,11 @@ And have our function accept an interface
 			}
 		}
 
-		err := OrderIngredients("tiramisu", m)
+		ingredients, err := OrderIngredients("tiramisu", m)
 		if err != nil {
 			t.Errorf(`error with OrderIngredients("tiramisu", m)`)
 		}
+		...
 	}
 
 : To sum up, we had a type, we implemented an interface satisfied by it, we used it and we mocked it.
@@ -447,7 +459,7 @@ Here is how to mock it
 
 	var retrieveIngredients = testingwithgo.Ingredients
 
-	func OrderIngredients(cake string) err {
+	func OrderIngredients(cake string) ([]string, err) {
 		// testingwithgo.Ingredients(cake)
 		retrieveIngredients(cake)
 	}
@@ -462,6 +474,54 @@ Here is how to mock it
 		defer retrieveIngredients = testingwithgo.Ingredients
 		err := OrderIngredients("tiramisu")
 	}
+
+* Good traits of test code
+
+- (more) explicit than application code
+- more verbose (long test function names)
+- DO REPEAT YOURSELF
+
+	func BadTestOrder(t *testing.T) {
+		m := getMockIngredienter()
+		res, err := OrderIngredients("tiramisu", m)
+		if err != nil {
+			t.Errorf(`error with OrderIngredients("tiramisu", m)`)
+		}
+		if resDifferentFromMockRes(res) {
+			t.Errorf(`result is different`)
+		}
+	}
+
+* Good traits of test code	
+
+	func TestCorrectIngredientsForTiramisu(t *testing.T) {
+		mockResult := []string{"Flour", "Eggs", "Chocolate"}
+
+		m := MockIngredienter{
+			func(cake string) ([]string, err){
+				return mockResult, nil
+			}
+		}
+
+		res, err := OrderIngredients("tiramisu", m)
+
+		if err != nil {
+			t.Errorf(`error with OrderIngredients("tiramisu", m)`)
+		}
+		if len(mockResult) != len(res) {
+			t.Errorf(`wrong result number, expecting %d, got %d`, len(mockResult), len(res))
+		}
+		for i, elem := range res {
+			if elem != mockResult[i] {
+				t.Errorf(` elem != mockResult[i], %s %s %d`, elem, mockResult[i], i)
+			}
+		}
+	}
+
+: good test code is obvious
+: chi viene dopo deve capire immediatamente e senza navigare a destra e sinistra cosa 
+: stiamo testando. Se parte della logica e` demandata a funzioni, si perde il controllo. Idealmente deve software
+: nello schermo
 
 
 * Pro tips
