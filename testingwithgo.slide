@@ -705,7 +705,7 @@ Each variant of the input and the output is stored in a map (table)
 
 * Testing with docker
 - Integration and End2End testing
-- Instrumenting docker containers in tests (setup and teardow)
+- Instrumenting docker containers in tests (setup and teardown)
 - Testing real beahviour with third parts interaction
 - MySql, Oracle,  Mongo, Redis and every available docker image
 - `https://github.com/ory/dockertest` 
@@ -728,3 +728,20 @@ Each variant of the input and the output is stored in a map (table)
 		}
 		...
 	}
+
+* Resources
+
+From 0 to tester:
+
+- Working effectively with legacy code - M. Feathers
+- The Go standard library golang.org/pkg/testing/
+- Mitchell Hashimito - Advanced testing in Go talk
+
+Libraries: 
+
+- the go standard library
+- github.com/ory/dockertest
+- github.com/stretchr/testify
+- github.com/vektra/mockery
+
+* We are hiring
