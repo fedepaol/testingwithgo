@@ -532,17 +532,16 @@ Each variant of the input and the output is stored in a map (table)
 .code httptest/fibonaccitest.go
 
 : Sfruttando le strutture anonime di GO
-: Table Driven Tests: Each table entry is a complete test case with inputs and expected results.
-: Approach promoted by the go echosystem and often found in the go standard library.
+: Table Driven Tests: Ogni entry della tabella è un test case completo con input ed output atteso.
+: Approccio promosso dall'ecosistema go e spesso si trova nella standard library di Go 
 : Usa TDT anche se ti viene in mente un solo test case, nel caso si presentino bugs puoi facilmente
 : aggiungere successivamente quei test case che falliscono
 
 * Table tests
 
 - Easy to add new test cases, just add new entry in the struct
-: composite literals and anonymous structs, to allow you to write related tests in a compact form
+: composite literals e le strutture anonime, permettono di scrivere i test in modo compatto
 - Protip: give a name to the table entry 
-: goland allows to run a single test 
 - With functions, useful with mockery to instruct the mock beahviour (eg: return with error)
 
 * Table tests   
@@ -623,7 +622,7 @@ Each variant of the input and the output is stored in a map (table)
 		}
 	}
 
-: Another approach found in the go std lib. go fmt for example
+: Approccio utilizzato nella standard library ad esempio nel package fmt
 : errors are omitted
  
 * Testify
@@ -677,8 +676,9 @@ Each variant of the input and the output is stored in a map (table)
 - In memory or chrooted(~similar) filesystems (and many others...)
 - Useful for setup and tear down an isolated environment every time. 
 - Write testable code. Use an FS abstraction not `os` package directly.
-: you need to write your functional code by injecting your FS Abstraction
-: because in golang FS funtion are called statically by using os.OpenFile
+: E' necessario scrivere il codice di business iniettando  un'astrazione del file system
+: dato che in golang le funzionalita di accesso al filesystem sono chiamate 
+: staticamente os.OpenFile()
 
 
 
@@ -686,7 +686,7 @@ Each variant of the input and the output is stored in a map (table)
 - Test the real connection, don't mock connections.
 - Any protocol
 - Setup a real server and test your handlers without mocks (eg http WebServer) 
-
+    //we want to test 
 	func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
@@ -696,11 +696,12 @@ Each variant of the input and the output is stored in a map (table)
 * Networking(eg: http)
 - *net/http/httptest*
 .code httptest/httptest.go /START OMIT/,/END OMIT/
-: Create a request to pass to our handler. We don't have any query parameters for now, so we'll
+: Si crea una richiesta da passare all'hanlder  We don't have any query parameters for now, so we'll
 : pass 'nil' as the third parameter.
-: We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
-: Our handlers satisfy http.Handler, so we can call their ServeHTTP method
-: directly and pass in our Request and ResponseRecorder.
+: Si crea un  ResponseRecorder (che soddisfa l'interfaccia http.ResponseWriter) per registrare la risposta.
+: il tipo HandlerFunc tramite la funzion ServeHTTP permette di chiamare 
+: l'HTTP handlers come se fosse una normale chiamata a funzione passando la Request e il ResponseRecorder.
+: sul ResponseRecorder controlliamo il body e lo status della risposta.
 
 
 * Testing with docker
