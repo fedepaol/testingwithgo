@@ -685,16 +685,25 @@ Each variant of the input and the output is stored in a map (table)
 * Networking
 - Test the real connection, don't mock connections.
 - Any protocol
-- Setup a real server and test your handlers without mocks (eg http WebServer) 
-    //we want to test 
-	func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Header().Set("Content-Type", "application/json")
-		io.WriteString(w, `{"alive": true}`)
+- Setup a real server and test your handlers without mocks.
+	func TestConn(t *testing.T) (client, server net.Conn) {
+		t.Helper()
+		ln, err := net.Listen(“tcp”, “127.0.0.1:0”)
+		var server net.Conn
+		go func() {
+			defer ln.Close()
+			server, err = ln.Accept()
+			}()
+		client, err := net.Dial(“tcp”, ln.Addr().String())
+		return client, server
 	}
-    
-* Networking(eg: http)
-- *net/http/httptest*
+
+: t.Helper tagga questa funzione come helper nell'environment di test 
+: testa una sola connessione, facile introdurne N.
+
+* Testing HTTP 
+- *net/http/httptest* `serveHTTP` helper 
+- test HTTP handlers as functions
 .code httptest/httptest.go /START OMIT/,/END OMIT/
 : Si crea una richiesta da passare all'hanlder  We don't have any query parameters for now, so we'll
 : pass 'nil' as the third parameter.
@@ -740,9 +749,9 @@ Each variant of the input and the output is stored in a map (table)
 
 From 0 to tester:
 
-- Working effectively with legacy code - M. Feathers
-- The Go standard library golang.org/pkg/testing/
-- Mitchell Hashimito - Advanced testing in Go talk
+- [[https://www.amazon.it/Working-Effectively-Legacy-Michael-Feathers/dp/0131177052][Working Effectively With Legacy Code ]] - M. Feathers
+- [[https://golang.org/pkg/testing/][golang.org/pkg/testing/]] - The Go standard library 
+- [[https://www.youtube.com/watch?v=8hQG7QlcLBk][Advanced testing in Go talk]] - Mitchell Hashimito 
 
 Libraries: 
 
