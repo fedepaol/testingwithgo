@@ -598,6 +598,19 @@ Each variant of the input and the output is stored in a map (table)
 - to run integration tests
 - to force golden files update
 
+* Short mode 
+	go test -short ./...
+- Tell long-running tests to shorten their run time
+- Used to avoid integration/e2e tests for example (dockertests)
+
+	//my long test running
+	func TestTimeConsuming(t *testing.T) {
+		if testing.Short() {
+	    	t.Skip("skipping test in short mode.")
+		}
+		...
+	}
+	
 : More on golden files later
 
 * Golden file tests
@@ -626,14 +639,16 @@ Each variant of the input and the output is stored in a map (table)
 : errors are omitted
  
 * Testify
-- github.com/stretchr/testify/assert
-- Easy assertions
+- github.com/stretchr/testify
+- Very large collection of assertions
 - Mocking
-- Testing suite interfaces and functions
+- Test Suite
+: asserzioni di equals su files su httpbody, sul panic di una funzione
 : approccio alla 'java'
-: ogni funzione di assert prende l'oggetto  testing.T. Se c'è un errore viene visualizzato tramite go test
-
-* Testify
+: creazioni di mock 
+: ogni funzione di assert prende l'oggetto testing.T. Se c'è un errore viene visualizzato tramite go test
+: permette di creare delle suite di tests
+* Testify: assert
 
 	func TestSomething(t *testing.T) {
 		assert.Equal(t, 123, 123, "they should be equal")
@@ -647,7 +662,7 @@ Each variant of the input and the output is stored in a map (table)
 		}
 	}
 
-* Mock
+* Testify: mock
 	type MyMockedObject struct{	
 		mock.Mock
 	}
@@ -667,7 +682,9 @@ Each variant of the input and the output is stored in a map (table)
 		
 		testObj.AssertExpectations(t)
 	}
-
+: con l'embedding della struct mock.Mock ereditiamo tutti i metodi della struct
+: istruiamo la funzione da mockare in modo che registri la chiamata con il valore e ritorni
+: i valori giusti
 * Do we always need mocks?
 
 * Afero
@@ -693,6 +710,7 @@ Each variant of the input and the output is stored in a map (table)
 		go func() {
 			defer ln.Close()
 			server, err = ln.Accept()
+			//...
 			}()
 		client, err := net.Dial(“tcp”, ln.Addr().String())
 		return client, server
@@ -732,18 +750,7 @@ Each variant of the input and the output is stored in a map (table)
 : 4. You can't defer this because os.Exit doesn't care for defer  
 
 
-* Short mode 
-	go test -short ./...
-- Tell long-running tests to shorten their run time
-- Used to avoid integration/e2e tests for example (dockertests)
 
-	//my long test running
-	func TestTimeConsuming(t *testing.T) {
-		if testing.Short() {
-	    	t.Skip("skipping test in short mode.")
-		}
-		...
-	}
 
 * Resources
 
