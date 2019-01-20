@@ -35,22 +35,9 @@ Reasons we change:
 : Every time we change a program that is behaving in a correct way, we put it's correctness in discussion.
 : This is important. When we change a part of our code, the rest is supposed to preserve its behaviour
 : Testing helps us to understand if the behaviour is changed
-
-
-* The cost of fixing a bug
-
-- during development : 100 $
-- during a QA testing phase : 1500 $
-- in production : _The_sky_is_the_limit_
-
-"In August 2012 Knight Capital Group Inc., one of America’s largest trading firms, mistakenly sent out more than four million stock orders in less than an hour [...] The software bug caused over $440 million in losses, which is almost four times what the company made in 2011."
-
-.caption from [[http://blog.celerity.com/the-true-cost-of-a-software-bug][The true cost of a software bug]]
-
-
-
 : Ovviamente se il comportamento non e` preservato, si traduce in un bug dell'applicazione
-: Fixing a production bug costs 100x more than fixing a bug at design time, and over 15x more than fixing a bug at implementation time.
+
+
 
 * 
 
@@ -62,6 +49,19 @@ Unfortunately, Edit and Pray is pretty much the industry standard
 .caption Micheal Feathers - Working effectively with legacy code
 
 : Covering means covering with tests
+
+* The cost of fixing a bug
+
+- during development : 100 $
+- during a QA testing phase : 1500 $
+- in production : _The_sky_is_the_limit_
+
+"In August 2012 Knight Capital Group Inc., one of America’s largest trading firms, mistakenly sent out more than four million stock orders in less than an hour [...] The software bug caused over $440 million in losses, which is almost four times what the company made in 2011."
+
+.caption from [[http://blog.celerity.com/the-true-cost-of-a-software-bug][The true cost of a software bug]]
+
+: Fixing a production bug costs 100x more than fixing a bug at design time, and over 15x more than fixing a bug at implementation time.
+
 
 * When we say testing we mean Unit Testing
 
@@ -318,7 +318,7 @@ Go naturally forces us to split our code in "libraries" and client code
 - test private functions worth being tested
 - protip: use _package_xxx__test_
 - test all the layers
-- test positive and counterpositive results
+- test positive and contrapositive results
 
 * Package organization
 
