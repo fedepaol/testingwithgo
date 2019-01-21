@@ -610,7 +610,7 @@ Each variant of the input and the output is stored in a map (table)
 		}
 		...
 	}
-	
+
 : More on golden files later
 
 * Golden file tests
@@ -622,21 +622,23 @@ Each variant of the input and the output is stored in a map (table)
 	var update = flag.Bool("update", false, "update .golden files")
 
 	func TestToJSON(t *testing.T) {
-		var b bytes.Buffer
-		/* ... do stuff to retrieve b */
-		w.Flush()
+		b	:= bytes.Buffer{}
+		obj := MyObject{....}
+		
+		ToJSON(obj, &b)
+		
 		gp := filepath.Join("testdata", t.Name()+".golden")
 		if *update {
 			ioutil.WriteFile(gp, b.Bytes(), 0644)
 		}
-		g := outil.ReadFile(gp)
+		g := ioutil.ReadFile(gp)
 		if !bytes.Equal(b.Bytes(), g) {
 			t.Errorf("writtein json does not match .golden file")
 		}
 	}
-
-: Approccio utilizzato nella standard library ad esempio nel package fmt
-: errors are omitted
+: Approccio molto utilizzato nella standard library ad esempio nel package fmt 
+: di fatto è un output atteso storato in un file separato invece che nel codice stesso
+: molto utile quando si hanno strutture dati molto grandi 
  
 * Testify
 - github.com/stretchr/testify
