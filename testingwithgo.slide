@@ -693,7 +693,7 @@ Each variant of the input and the output is stored in a map (table)
 
 * Afero
 - A FileSystem Abstraction System for Go
-- Useful to mocks a filesystem.  
+- Useful to replicate a filesystem.  
 - In memory or chrooted(~similar) filesystems (and many others...)
 - Useful for setup and tear down an isolated environment every time. 
 - Write testable code. Use an FS abstraction not `os` package directly.
