@@ -598,6 +598,8 @@ Each variant of the input and the output is stored in a map (table)
 - to run integration tests
 - to force golden files update
 
+: *_integration_test.go con il tag di build //+build integration e lanciando con
+: go test -tag=integration 
 * Short mode 
 	go test -short ./...
 - Tell long-running tests to shorten their run time
