@@ -577,9 +577,9 @@ Each variant of the input and the output is stored in a map (table)
 		// do somenthing  with data
 	}
 
-- go test set pwd as package directory 
+- go test sets pwd as package directory 
 - use simply relative path in tests eg: "testdata"
-- very useful for loading config, model data, binary data etc 
+- very useful for loading config, model data, binary data, etc 
 - go tool will ignore any directory matching the word testdata
 
 * Mockery
