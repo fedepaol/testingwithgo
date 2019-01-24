@@ -593,9 +593,17 @@ Each variant of the input and the output is stored in a map (table)
 
 * Use flags in tests
 
-- to override parameters
 - to run only slow tests
-- to run integration tests
+- to run integration tests 
+	
+	go test -tag=integration 
+
+	// in *_integration_test.go
+	// +build integration 
+	func YourIntegrationTest(t *testing.T) {
+		...	
+	}
+
 - to force golden files update
 
 : *_integration_test.go con il tag di build //+build integration e lanciando con
