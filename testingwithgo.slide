@@ -582,15 +582,6 @@ Each variant of the input and the output is stored in a map (table)
 - very useful for loading config, model data, binary data, etc 
 - go tool will ignore any directory matching the word testdata
 
-* Mockery
-- https://github.com/vektra/mockery
-- generate code from interfaces
-    mockery -name MyDao -inpkg .
-- similar to Java's Mockito 
-
-    mock.On("MethodName", args...).Return(...)
-- quantifiers `Once()`, `None()`, `Times(n)`
-
 * Use flags in tests
 
 - to run only slow tests
@@ -697,6 +688,16 @@ Each variant of the input and the output is stored in a map (table)
 : con l'embedding della struct mock.Mock ereditiamo tutti i metodi della struct
 : istruiamo la funzione da mockare in modo che registri la chiamata con il valore e ritorni
 : i valori giusti
+
+* Mockery
+- https://github.com/vektra/mockery
+- generate code from interfaces
+    mockery -name MyDao -inpkg .
+- similar to Java's Mockito 
+
+    mock.On("MethodName", args...).Return(...)
+- quantifiers `Once()`, `None()`, `Times(n)`
+
 * Do we always need mocks?
 
 * Afero
@@ -715,17 +716,17 @@ Each variant of the input and the output is stored in a map (table)
 - Test the real connection, don't mock connections.
 - Any protocol
 - Setup a real server and test your handlers without mocks.
-	func TestConn(t *testing.T) (client, server net.Conn) {
+	func TestConn(t *testing.T) (client, conn net.Conn) {
 		t.Helper()
 		ln, err := net.Listen(“tcp”, “127.0.0.1:0”)
-		var server net.Conn
+		var conn net.Conn
 		go func() {
 			defer ln.Close()
-			server, err = ln.Accept()
+			conn, err = ln.Accept()
 			//...
 			}()
 		client, err := net.Dial(“tcp”, ln.Addr().String())
-		return client, server
+		return client, conn
 	}
 
 : t.Helper tagga questa funzione come helper nell'environment di test 
