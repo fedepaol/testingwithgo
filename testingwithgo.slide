@@ -531,7 +531,6 @@ Here is how to mock it
 Each variant of the input and the output is stored in a map (table)
 .code httptest/fibonaccitest.go
 
-: Sfruttando le strutture anonime di GO
 : Table Driven Tests: Ogni entry della tabella è un test case completo con input ed output atteso.
 : Approccio promosso dall'ecosistema go e spesso si trova nella standard library di Go 
 : Usa TDT anche se ti viene in mente un solo test case, nel caso si presentino bugs puoi facilmente
