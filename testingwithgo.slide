@@ -532,7 +532,6 @@ Here is how to mock it
 Each variant of the input and the output is stored in a map (table)
 .code httptest/fibonaccitest.go
 
-: Sfruttando le strutture anonime di GO
 : Table Driven Tests: Ogni entry della tabella è un test case completo con input ed output atteso.
 : Approccio promosso dall'ecosistema go e spesso si trova nella standard library di Go 
 : Usa TDT anche se ti viene in mente un solo test case, nel caso si presentino bugs puoi facilmente
@@ -594,11 +593,21 @@ Each variant of the input and the output is stored in a map (table)
 
 * Use flags in tests
 
-- to override parameters
 - to run only slow tests
-- to run integration tests
+- to run integration tests 
+	
+	go test -tag=integration 
+
+	// in *_integration_test.go
+	// +build integration 
+	func YourIntegrationTest(t *testing.T) {
+		...	
+	}
+
 - to force golden files update
 
+: *_integration_test.go con il tag di build //+build integration e lanciando con
+: go test -tag=integration 
 * Short mode 
 	go test -short ./...
 - Tell long-running tests to shorten their run time
@@ -692,7 +701,7 @@ Each variant of the input and the output is stored in a map (table)
 
 * Afero
 - A FileSystem Abstraction System for Go
-- Useful to mocks a filesystem.  
+- Useful to replicate a filesystem.  
 - In memory or chrooted(~similar) filesystems (and many others...)
 - Useful for setup and tear down an isolated environment every time. 
 - Write testable code. Use an FS abstraction not `os` package directly.
