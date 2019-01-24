@@ -329,8 +329,8 @@ Go naturally forces us to split our code in "libraries" and client code
 
 .caption aws-sdk-go is a good example of package organization [[https://github.com/aws/aws-sdk-go/tree/master]]
 
-
 : Ideally one package per dependency, it's easier to mock external dependencies
+: Packages put a firewall between the components of your application
 : Layering packages allow to test the whole 
 
 * State
