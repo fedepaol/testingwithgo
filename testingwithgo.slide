@@ -338,6 +338,7 @@ Go naturally forces us to split our code in "libraries" and client code
 - Have global configuration
 - Make parameters configurable
 
+: Lo stato e` nemico della riproducibilita`
 : No hardcoded hosts, ports, timeouts. Have them configurable (with a default)
 : local variables / environment
 : tests should be able to override them
